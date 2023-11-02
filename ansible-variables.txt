@@ -1,0 +1,88 @@
+Ansible Variables
+-----------------
+is used to store a value
+
+variable starts with letter. it contains on letters, numbers and underscore(_)
+
+valid variables			invalid variabls
+---------------			----------------
+web_server			web server
+user_1				user.1
+remote_server_1			remoteserver$1
+
+
+Examples
+-------
+1. Createing user
+
+---
+- name: Creating a user
+  hosts: all
+  vars:
+    user_name: kishore
+  tasks:
+    - name: creating {{ user_name }} user
+      user:
+        name: "{{ user_name }}"
+        state: present
+        
+        
+2. Install web server
+
+---
+- name: configure web server
+  hosts: all
+  vars:
+    web_app_name: apache2
+    db_name: mysql-server
+    db_service: mysql
+  tasks:
+    - name: installing {{ web_app_name }} package
+      apt: 
+        name: 
+          - "{{ web_app_name }}"
+          - "{{ db_name }}"
+        state: present
+
+    - name: starting {{ web_app_name }} service
+      service:
+        name: "{{ web_app_name }}"
+        state: started
+
+    - name: start {{ db_service}} service
+      service: 
+        name: "{{ db_service }}"
+        state: started
+
+
+3. Passing variables through file
+* create vars dir 
+* create vars.yaml file and mention variables
+    web_app_name: apache2
+    db_name: mysql-server
+    db_service: mysql
+    
+    
+---
+- name: configure web server
+  hosts: all
+  vars_files:
+    - vars/vars.yaml
+  tasks:
+    - name: installing {{ web_app_name }} package
+      apt: 
+        name: 
+          - "{{ web_app_name }}"
+          - "{{ db_name }}"
+        state: present
+
+    - name: starting {{ web_app_name }} service
+      service:
+        name: "{{ web_app_name }}"
+        state: started
+
+    - name: start {{ db_service}} service
+      service: 
+        name: "{{ db_service }}"
+        state: started
+
